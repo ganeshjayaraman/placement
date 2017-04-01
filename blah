@@ -1,0 +1,37 @@
+$query = "SELECT DISTINCT userid from marks ORDER BY userid ASC";
+    $data = mysqli_query($sql,$query);
+    $total_usr = 0;
+    $usr_id = array();
+    while($row = mysqli_fetch_assoc($data))
+    {
+        array_push($usr_id,$row['userid']);
+        $total_usr++;
+    }
+    $frank=0;
+    $usr_name = array();
+    $userids = array();
+    for($i=0;$i<$total_usr;$i++){
+        $query = "SELECT username from login WHERE id = '$usr_id[$i]' AND rights = 0";
+        $data = mysqli_query($sql,$query);
+        while ($row = mysqli_fetch_array($data)){
+            array_push($usr_name,$row['username']);
+            array_push($userids,$usr_id[$i]);
+            $frank++;
+        }
+
+    }
+    $total_usr=$frank;
+    $sum_usr = array();
+        for ($i=0;$i<$total_usr;$i++){
+            $query="SELECT SUM(marks) FROM marks WHERE userid = '$usr_id[$i]'";
+            $data = mysqli_query($sql,$query);
+            if (mysqli_num_rows($data)== 1) {
+                $row = mysqli_fetch_array($data);
+                $sum_usr[$i] = $row['SUM(marks)'];
+            }
+        }
+    $avg_usr = array();
+    for ($i=0;$i<$total_usr;$i++){
+        $avg_usr[$i]=$sum_usr[$i]/$total_question;
+        $avg_usr[$i]*=100;
+    }
